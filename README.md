@@ -1,5 +1,5 @@
 # Recipe App 
-Recipe app finds the recipes on the basis of searched ingredient. We will have App designing, state management, API integration
+Recipe app finds the recipes on the basis of searched ingredient. I've integrated app designing, state management and API integration
 ![](1.PNG)
 
 #### Features integrated:
