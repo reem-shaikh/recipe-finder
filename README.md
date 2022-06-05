@@ -11,8 +11,6 @@ npm install @mui/material @emotion/react @emotion/styled --legacy-peer-deps
 
 npm install @mui/icons-material --legacy-peer-deps 
 ```
-- Responsive UI with Flex 
-- Mobile Responsive Design 
 
 #### How the App will work? 
 1. When user enters the ingredient for the recipe in the searchbar, the recipe will show up, each recipe will be in a card format 
@@ -222,7 +220,7 @@ const RecipeComponent = (props) => {
 export default RecipeComponent
 ```
 ### Had to make some revisions in the code
-- I merged both the components and added styled components 
+- I merged both the components and added styled components for better readability
 > App.js 
 ```bash
 import React, { useState } from "react";
