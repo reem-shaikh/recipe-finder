@@ -221,4 +221,8 @@ const RecipeComponent = (props) => {
 
 export default RecipeComponent
 ```
-
+#### Hosting
+I tried hosting with netlify and github pages 
+- https://effortless-jelly-fc7fe4.netlify.app/
+- https://reem-shaikh.github.io/recipe-finder/
+but its not loading the API, it works on my localhost though!
