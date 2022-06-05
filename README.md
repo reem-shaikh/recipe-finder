@@ -221,7 +221,7 @@ const RecipeComponent = (props) => {
 
 export default RecipeComponent
 ```
-### Had to make some revisions in the code, since it was showing error on deployment 
+### Had to make some revisions in the code
 - I merged both the components and added styled components 
 > App.js 
 ```bash
