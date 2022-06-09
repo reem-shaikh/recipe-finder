@@ -220,7 +220,171 @@ const RecipeComponent = (props) => {
 export default RecipeComponent
 ```
 ### Had to make some revisions in the code
-- I merged both the components and added styled components for better readability
+- I merged both the components 
+```bash
+import React, { useState } from "react";
+import Axios from "axios";
+import img1 from './images/hamburger.svg'
+import img2 from './images/search-icon.svg'
+import styled from 'styled-components'
+import './index.css'
+import Dialog from '@mui/material/Dialog'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogActions from '@mui/material/DialogActions'
+
+const APP_ID = "90de009a";
+const APP_KEY = "b1dbb8e46a7813c3da3c985d75e5be86";
+
+const RecipeListContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 30px;
+  gap: 20px;
+  justify-content: space-evenly;
+`;
+
+const Placeholder = styled.img`
+  width: 120px;
+  height: 120px;
+  margin: 200px;
+  opacity: 50%;
+`;
+
+
+const RecipeComponent = (props) => {
+  //if Dialog is open or not, show or dont show the dialog
+  const [show, setShow] = useState("");
+
+  //recieve props from recipe object which returns every recipe present for a partular search, defined inside RecipeListContainer inside App component 
+  //const {recipe} = props
+
+  console.log('props', props)
+  //destructuring recipe object 
+  const { label, image, ingredients, url } = props.recipe;
+
+  return (
+    <div className='RecipeContainer'>
+      <Dialog
+        onClose={() => console.log("adsadad")}
+        aria-labelledby="simple-dialog-title"
+        open={!!show}>
+
+        <DialogTitle>Ingredients</DialogTitle>
+        <DialogContent>
+          <div className='RecipeName'>{label}</div>
+          <table>
+            <thead>
+              <th>Food</th>
+              <th>Text</th>
+            </thead>
+            <tbody>
+              {ingredients.map((ingredient, index) => (
+                <tr key={index} className="ingredient-list">
+                  <td>{ingredient.food}</td>
+                  <td>{ingredient.text}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </DialogContent>
+        <DialogActions>
+          <div className='SeeNewTab' onClick={() => window.open(url)}>See More</div>
+          <div className='SeeMoreText' onClick={() => setShow("")}>Close</div>
+        </DialogActions>
+      </Dialog>
+
+      <img className='CoverImage' src={image} alt={label} />
+      <div className='RecipeName'>{label}</div>
+
+      {/* when user clicks on ingredients button, setShow will be set to true, then open the popup */}
+      <div className='IngredientsText' onClick={() => setShow(!show)}>
+        Ingredients
+      </div>
+      
+      {/* when user clicks on see complete recipe it redirects to the url passed from recipe object */}
+      <div className='SeeMoreText' onClick={() => window.open(url)}>
+        See Complete Recipe
+      </div>
+    </div>
+    // recipe container ends 
+  );
+};
+
+const AppComponent = (props) => {
+  //maintaining a state for keeping track of what the user enters in the search bar using searchQuery state 
+  const [searchQuery, updateSearchQuery] = useState("");
+
+  //this state stores the recipe list for a particular search 
+  const [recipeList, updateRecipeList] = useState([]);
+
+  //this state is for managing the time required displaying the search results after user enters in the search bar,
+  const [timeoutId, updateTimeoutId] = useState();
+
+  //Fetching JSON data from the API 
+  //reccieve the searchstring (whatever user types in the search bar)
+  //based on what the user enters in the searchstring, axios tries to find it from the data available to it, after data is recieved, DOM is populated with this data in the form of cards, each card representing a recipe for that particular value present inside the JSON data of the URL endpoint 
+  const fetchData = async (searchString) => {
+    const response = await Axios.get(
+      `https://api.edamam.com/search?q=${searchString}&app_id=${APP_ID}&app_key=${APP_KEY}`,
+    );
+    console.log('response',response)
+    updateRecipeList(response.data.hits);
+  };
+
+  //for every text change were making an API call 
+  //use concept of debouncing for making API calls 
+  //when user completes typing in the search bar and make the app wait for around 1/2second (500ms) before loading the results 
+  const onTextChange = (e) => {
+    //every time user searchs in searchbar again, the previous timeout is erased, so we start with a fresh slate 
+    clearTimeout(timeoutId);
+
+    updateSearchQuery(e.target.value);
+    //were storing the timeout in a constant because we'll be updating the time state with this value 
+    const timeout = setTimeout(() => fetchData(e.target.value), 500);
+    //updating the time state 
+    updateTimeoutId(timeout);
+  };
+
+  return (
+    <div className='Container'>
+      <div className='Header'>
+        <div className='AppName'>
+          <img className='RecipeImage' src={img1} />
+          Recipe's
+        </div>
+        <div className='SearchBox'>
+          <img className='SearchIcon' src={img2} />
+          <input className='SearchInput'
+            placeholder="Search Recipe"
+            value={searchQuery}
+            onChange={onTextChange}
+          />
+        </div>
+        {/* Searchbox ends  */}
+      </div>
+      {/* header ends  */}
+
+      {/* whenever there is some content inside recipeList, map over the recipeList and return the recipeComponent else if there is no content inside recipeList then display the default svg*/}
+      <RecipeListContainer>
+        {recipeList?.length ? (
+          recipeList.map((recipe, index) => (
+            <RecipeComponent key={index} recipe={recipe.recipe} />
+          ))
+        ) : (
+          <Placeholder src={img1} />
+        )}
+      </RecipeListContainer>
+     {/* recipelistcontainer ends */}
+    </div>
+    //container ends 
+  );
+};
+
+export default AppComponent;
+```
+- then added styled components for better readability
 > App.js 
 ```bash
 import React, { useState } from "react";
